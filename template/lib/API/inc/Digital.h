@@ -17,7 +17,6 @@ class DigitalIn
 	public:
 		
 		DigitalIn(GPIO_common GPIO_c);
-		DigitalIn(GPIO_common GPIO_c, GPIOOType_TypeDef type);
 		void mode(GPIOPuPd_TypeDef pull);	// Set input pin mode (GPIO_PuPd_UP, GPIO_PuPd_DOWN, GPIO_PuPd_NOPULL)
 		int read();												// Read output state
 		operator int();										// Read output state (shorthand)
@@ -34,6 +33,7 @@ class DigitalOut
 	public:
 		
 		DigitalOut(GPIO_common GPIO_c);
+		DigitalOut(GPIO_common GPIO_c, GPIOOType_TypeDef type);
 		void write(int n);							// Write on the output
 		int read();											// Read output state
 		DigitalOut& operator= (int n);	// Write on the output (shorthand)

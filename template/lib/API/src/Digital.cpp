@@ -2,7 +2,7 @@
  * \file Digital.cpp
  * \brief Digital API.
  * \author Rémi.Debord
- * \version 1.0
+ * \version 1.1
  * \date 19 novembre 2013
  *
  * Digital library (DigitalIn, DigitalOut and InterruptIn).
@@ -45,40 +45,6 @@ DigitalIn :: DigitalIn(GPIO_common GPIO_c)
   GPIO_InitStructure.GPIO_Pin = m_pin;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_3;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;	//GPIO_PuPd_NOPULL;
-  GPIO_Init(m_port, &GPIO_InitStructure);
-}
-
-/*!
- *  \brief Constructor
- *
- *  DigitalIn constructor.
- *
- *  \param GPIO_c : GPIO pin
- *	\param type: Push pull or Open drain
- *
- */
-
-DigitalIn :: DigitalIn(GPIO_common GPIO_c, GPIOOType_TypeDef type)
-{
-	GPIO_InitTypeDef  GPIO_InitStructure;
-	
-	m_port = GPIO_c.port;
-	m_pin = GPIO_c.pin;
-	m_value = 0;
-	
-  /* GPIOx Periph clock enable */
-	if(m_port == GPIOA) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
-	else if(m_port == GPIOB) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-	else if(m_port == GPIOC) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
-	else if(m_port == GPIOD) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
-	else if(m_port == GPIOF) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOF, ENABLE);
-	
-  /* Configure "pin" in input mode */
-  GPIO_InitStructure.GPIO_Pin = m_pin;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_3;
-	GPIO_InitStructure.GPIO_OType = type;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;	//GPIO_PuPd_NOPULL;
   GPIO_Init(m_port, &GPIO_InitStructure);
 }
@@ -166,6 +132,41 @@ DigitalOut :: DigitalOut(GPIO_common GPIO_c)
   GPIO_InitStructure.GPIO_Pin = m_pin;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_3;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(m_port, &GPIO_InitStructure);
+}
+
+/*!
+ *  \brief Constructor
+ *
+ *  DigitalOut constructor.
+ *
+ *  \param GPIO_c : GPIO pin
+ *	\param type: Push pull or Open drain
+ *
+ */
+
+DigitalOut :: DigitalOut(GPIO_common GPIO_c, GPIOOType_TypeDef type)
+{
+	GPIO_InitTypeDef  GPIO_InitStructure;
+	
+	m_port = GPIO_c.port;
+	m_pin = GPIO_c.pin;
+	m_value = 0;
+	
+  /* GPIOx Periph clock enable */
+	if(m_port == GPIOA) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+	else if(m_port == GPIOB) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+	else if(m_port == GPIOC) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+	else if(m_port == GPIOD) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
+	else if(m_port == GPIOF) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOF, ENABLE);
+	
+  /* Configure "pin" in output pushpull mode */
+  GPIO_InitStructure.GPIO_Pin = m_pin;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_OType = type;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_3;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(m_port, &GPIO_InitStructure);
