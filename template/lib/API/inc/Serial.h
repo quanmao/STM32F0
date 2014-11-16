@@ -7,7 +7,7 @@
 
 /* defines ------------------------------------------------------------------ */
 #define DEFAULT_BAUDRATE 					(9600)
-#define MAX_USART_RX_BUF_LEN			(256)
+#define MAX_USART_RX_BUF_LEN			(512)
 #define USART_ENDOFFRAME_RX_TIME	(10)	// 10 ms
 
 /* public variables --------------------------------------------------------- */
@@ -34,14 +34,14 @@ class Serial
 		USART_TypeDef* m_usart;
 	
 		volatile char* m_rxTimer;
-		char m_rxHead;
-		char m_rxTail;
+		int m_rxHead;
+		int m_rxTail;
 		//char* m_rxBuffer;
 		char m_rxBuffer[MAX_USART_RX_BUF_LEN];
 		
 		char* m_txBuffer;
-		char* m_txIndex;
-		char* m_txLength;
+		int* m_txIndex;
+		int* m_txLength;
 		
 		char m_mode;
 		char m_timeout;
@@ -54,8 +54,8 @@ class Serial
 		void receive(void);
 		void baud(int baudrate);
 		void timeout(char value);
-		char write(char *buffer, char length);
-		char write_b(char *buffer, char length);
+		int write(char *buffer, int length);
+		int write_b(char *buffer, int length);
 		int read(char *buffer);
 };
 

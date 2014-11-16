@@ -555,26 +555,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>FATFS</GroupName>
-          <Files>
-            <File>
-              <FileName>diskio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\lib\FATFS\diskio.c</FilePath>
-            </File>
-            <File>
-              <FileName>ff.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\lib\FATFS\ff.c</FilePath>
-            </File>
-            <File>
-              <FileName>sdcard.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\lib\FATFS\sdcard.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>API</GroupName>
           <Files>
             <File>
@@ -636,6 +616,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>GPS.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\GPS.cpp</FilePath>
             </File>
           </Files>
         </Group>
