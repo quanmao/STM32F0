@@ -17,15 +17,15 @@ extern "C"
 	Serial *serial1;
 	Serial *serial2;
 
-	volatile char USART1_usartRxTimer;
-	char USART1_index;
-	char USART1_length;
-	char USART1_TxBuffer[MAX_USART_RX_BUF_LEN];
+	volatile char USART1_usartRxTimer = 0;
+	int USART1_index = 0;
+	int USART1_length = 0;
+	char USART1_TxBuffer[MAX_USART_RX_BUF_LEN] = {};
 	
-	volatile char USART2_usartRxTimer;
-	char USART2_index;
-	char USART2_length;
-	char USART2_TxBuffer[MAX_USART_RX_BUF_LEN];
+	volatile char USART2_usartRxTimer = 0;
+	int USART2_index = 0;
+	int USART2_length = 0;
+	char USART2_TxBuffer[MAX_USART_RX_BUF_LEN] = {};
 }
 
 /*!
@@ -138,7 +138,7 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_
   USART_Init(m_usart, &USART_InitStructure);
 	
   /* Enable USART TX and RX interrupt */
-	USART_ITConfig(m_usart, USART_IT_TXE, ENABLE);
+	//USART_ITConfig(m_usart, USART_IT_TXE, ENABLE);
   USART_ITConfig(m_usart, USART_IT_RXNE, ENABLE);
 	
 	// Disable Overrun detection
@@ -243,7 +243,7 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_pin, char mode)
 	}
 	else if((m_mode & USART_Mode_Tx) != 0)
 	{
-		USART_ITConfig(m_usart, USART_IT_TXE, ENABLE);
+		//USART_ITConfig(m_usart, USART_IT_TXE, ENABLE);
 	}  
 	
 	// Disable Overrun detection
@@ -311,9 +311,9 @@ void Serial :: receive(void)
  *  \param length: data length
  */
 
-char Serial :: write(char *buffer, char length)
+int Serial :: write(char *buffer, int length)
 {
-	char i;
+	int i;
 	
 	if((m_mode & USART_Mode_Tx) == 0) return 0;
 	
@@ -342,9 +342,9 @@ char Serial :: write(char *buffer, char length)
  *  \param length: data length
  */
 
-char Serial :: write_b(char *buffer, char length)
+int Serial :: write_b(char *buffer, int length)
 {
-	char i;
+	int i;
 	
 	if((m_mode & USART_Mode_Tx) == 0) return 0;
 	
@@ -389,7 +389,7 @@ int Serial :: read(char *buffer)
 	else
 	{
 		/* Reload timer */
-		//*m_rxTimer = m_timeout;
+		*m_rxTimer = m_timeout;
 		
 		/* Get head and tail position */
 		if(m_rxHead >= m_rxTail) length = m_rxHead - m_rxTail;
