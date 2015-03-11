@@ -39,12 +39,12 @@ extern "C"
  *
  */
 
-Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_c_tx)
+Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_c_tx, GPIO_common GPIO_c_de)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
-	
+
 	m_rxPort = GPIO_c_rx.port;
 	m_rxPin = GPIO_c_rx.pin;
 	m_rxPinSource = GPIO_c_rx.pinSource;
@@ -57,6 +57,8 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_
 	m_usart = USARTx;
 	m_timeout = USART_ENDOFFRAME_RX_TIME;
 	m_mode = USART_Mode_Rx | USART_Mode_Tx;
+	
+	m_rs485 = (GPIO_c_de.port != GPIOF) ? 1 : 0;
 	
 	//m_rxBuffer = (char*) calloc(MAX_USART_RX_BUF_LEN, sizeof(char));
 	
@@ -87,6 +89,14 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_
 	else if(m_txPort == GPIOB) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 	else if(m_txPort == GPIOC) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
 	else if(m_txPort == GPIOD) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
+	
+	if(m_rs485)
+	{
+		if(GPIO_c_de.port == GPIOA) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+		else if(GPIO_c_de.port == GPIOB) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+		else if(GPIO_c_de.port == GPIOC) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOC, ENABLE);
+		else if(GPIO_c_de.port == GPIOD) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOD, ENABLE);
+	}
   
   /* Enable USART clock */
   if(m_usart == USART1) RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
@@ -98,8 +108,14 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_
 	
 	if(m_txPort == GPIOA) GPIO_PinAFConfig(GPIOA, m_txPinSource, GPIO_AF_1);
 	else if(m_txPort == GPIOB) GPIO_PinAFConfig(GPIOB, m_txPinSource, GPIO_AF_0);
+	
+	if(m_rs485)
+	{
+		if(GPIO_c_de.port == GPIOA) GPIO_PinAFConfig(GPIOA, GPIO_c_de.pinSource, GPIO_AF_1);
+		else if(GPIO_c_de.port == GPIOB) GPIO_PinAFConfig(GPIOB, GPIO_c_de.pinSource, GPIO_AF_0);
+	}
   
-  /* Configure USART Tx and Rx as alternate function push-pull */
+  /* Configure USART Tx and Rx as alternate function push-pull (optional DE) */
   GPIO_InitStructure.GPIO_Pin = m_rxPin;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_3;
@@ -110,6 +126,13 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_
   GPIO_InitStructure.GPIO_Pin = m_txPin;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_Init(m_txPort, &GPIO_InitStructure);
+	
+	if(m_rs485)
+	{
+		GPIO_InitStructure.GPIO_Pin = GPIO_c_de.pin;
+		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+		GPIO_Init(GPIO_c_de.port, &GPIO_InitStructure);
+	}
 	
   /* Enable the USARTx Interrupt */
   if(m_usart == USART1) NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
@@ -132,8 +155,8 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = m_mode;
+	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+	USART_InitStructure.USART_Mode = m_mode;
 
   USART_Init(m_usart, &USART_InitStructure);
 	
@@ -143,6 +166,15 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_
 	
 	// Disable Overrun detection
 	USART_OverrunDetectionConfig(m_usart, USART_OVRDetection_Disable);
+	
+	if(m_rs485)
+	{
+		// Assertion time max value is (2^5)-1 = 31 (=> 2 bit time with oversampling by 16)
+		USART_SetDEAssertionTime(m_usart, 31);
+		USART_SetDEDeassertionTime(m_usart, 31);
+		
+		USART_DECmd(m_usart, ENABLE);
+	}
 	
 	USART_Cmd(m_usart, ENABLE);
 }
@@ -231,7 +263,7 @@ Serial :: Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_pin, char mode)
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None; 
   USART_InitStructure.USART_Mode = m_mode;
 
   USART_Init(m_usart, &USART_InitStructure);
@@ -277,6 +309,12 @@ void Serial :: baud(int baudrate)
   USART_InitStructure.USART_Mode = m_mode;
 
   USART_Init(m_usart, &USART_InitStructure);
+	
+	if(m_rs485)
+	{
+		USART_SetDEAssertionTime(m_usart, 31);
+		USART_SetDEDeassertionTime(m_usart, 31);
+	}
 	
 	USART_Cmd(m_usart, ENABLE);
 }
@@ -412,6 +450,26 @@ int Serial :: read(char *buffer)
 			return length;
 		}
 	}
+}
+
+
+/*!
+ *  \brief USART busy
+ *
+ *  Get usart status.
+ *
+ *  \return >0 if busy else 0
+ */
+
+char Serial :: busy(void)
+{
+	if((char)USART_GetFlagStatus(m_usart, USART_FLAG_BUSY) ||
+	   (char)!USART_GetFlagStatus(m_usart, USART_FLAG_TXE))
+	{
+		return 1;
+	}
+	
+	return 0;
 }
 
 /*!

@@ -14,6 +14,8 @@
         <TargetCommonOption>
           <Device>STM32F051R8</Device>
           <Vendor>STMicroelectronics</Vendor>
+          <PackID>Keil.STM32F0xx_DFP.1.3.0</PackID>
+          <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x10000) IRAM(0x20000000,0x2000) CPUTYPE("Cortex-M0") CLOCK(48000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -364,7 +366,7 @@
               <MiscControls>--cpp</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\inc;.\lib\API\inc;.\lib\CMSIS\Device\ST\STM32F0xx\Include;.\lib\FATFS;.\lib\MISC\inc;.\lib\STM32F0\inc</IncludePath>
+              <IncludePath>.\inc;.\lib\API\inc;.\lib\CMSIS\Device\ST\STM32F0xx\Include;.\lib\MISC\inc;.\lib\STM32F0\inc;.\lib\FreeRTOS\Source\include;.\lib\FreeRTOS\Demo\CORTEX_M0_STM32F0518_IAR;.\lib\FreeRTOS\Source\portable\RVDS\ARM_CM0</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -381,7 +383,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>.\lib\FREERTOS\Source\include</IncludePath>
             </VariousControls>
           </Aads>
           <LDads>

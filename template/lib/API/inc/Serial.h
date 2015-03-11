@@ -43,12 +43,13 @@ class Serial
 		int* m_txIndex;
 		int* m_txLength;
 		
+		char m_rs485;
 		char m_mode;
 		char m_timeout;
 	
 	public:
 		
-		Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_c_tx);
+		Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_rx, GPIO_common GPIO_c_tx, GPIO_common GPIO_c_de = PF0);
 		Serial(USART_TypeDef* USARTx, GPIO_common GPIO_c_pin, char mode);
 		
 		void receive(void);
@@ -57,6 +58,7 @@ class Serial
 		int write(char *buffer, int length);
 		int write_b(char *buffer, int length);
 		int read(char *buffer);
+		char busy(void);
 };
 
 #endif /* __SERIAL_H */
