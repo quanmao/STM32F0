@@ -609,6 +609,11 @@
               <FileType>8</FileType>
               <FilePath>.\lib\API\src\Touch.cpp</FilePath>
             </File>
+            <File>
+              <FileName>Watchdog.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\API\src\Watchdog.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

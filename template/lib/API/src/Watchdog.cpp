@@ -1,4 +1,24 @@
+/*!
+ * \file Watchdog.cpp
+ * \brief Watchdog API.
+ * \author Rémi.Debord
+ * \version 1.0
+ * \date 12 mars 2015
+ *
+ * Watchdog library (IWDG).
+ *
+ */
+
 #include "Watchdog.h"
+
+/*!
+ *  \brief Constructor
+ *
+ *  Watchdog constructor.
+ *
+ *  \param timeout : watchdog reload value (> 6ms and < 24000ms)
+ *
+ */
 
 Watchdog :: Watchdog(int timeout)
 {
@@ -23,6 +43,13 @@ Watchdog :: Watchdog(int timeout)
 	// Enable watchdog
 	IWDG_Enable();
 }
+
+/*!
+ *  \brief Reload
+ *
+ *  Watchdog reload (if the watchdog counter reach 0, it reset the microcontroller).
+ *
+ */
 
 void Watchdog :: reload(void)
 {
