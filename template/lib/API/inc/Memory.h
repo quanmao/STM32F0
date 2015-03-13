@@ -21,6 +21,7 @@ class Memory
 		void write(int address, int data);
 		void write(int data);
 		int read(int address);
+		void erase (void);
 };
 
 #endif
