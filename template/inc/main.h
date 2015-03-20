@@ -16,6 +16,7 @@
 #include "Touch.h"
 #include "Watchdog.h"
 #include "Memory.h"
+#include "Power.h"
 
 /* variables ------------------------------------------------------------------*/
 /* functions ------------------------------------------------------------------*/

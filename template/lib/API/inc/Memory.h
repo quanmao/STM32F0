@@ -17,7 +17,7 @@ class Memory
 	
 	public:
 		
-		Memory(unsigned int base = MEMORY_START_ADDRESS);
+		Memory(unsigned int base);
 		void write(int address, int data);
 		void write(int data);
 		int read(int address);

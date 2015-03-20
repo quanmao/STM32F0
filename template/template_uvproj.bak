@@ -614,6 +614,16 @@
               <FileType>8</FileType>
               <FilePath>.\lib\API\src\Watchdog.cpp</FilePath>
             </File>
+            <File>
+              <FileName>Memory.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\API\src\Memory.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Power.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\API\src\Power.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -623,6 +633,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>CLI.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\CLI.cpp</FilePath>
             </File>
           </Files>
         </Group>

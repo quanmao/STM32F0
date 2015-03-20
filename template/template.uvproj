@@ -619,6 +619,11 @@
               <FileType>8</FileType>
               <FilePath>.\lib\API\src\Memory.cpp</FilePath>
             </File>
+            <File>
+              <FileName>Power.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\API\src\Power.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

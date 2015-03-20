@@ -2,7 +2,7 @@
 	
 DigitalOut led1(PC8);
 
-Memory memory;
+Memory memory(MEMORY_START_ADDRESS);
 
 int data;
 

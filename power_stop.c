@@ -3,12 +3,22 @@
 Power power;
 
 DigitalOut led1(PC9);
+DigitalOut led2(PC8);
+
+InterruptIn button(PA0);
+
+void toggle(void)
+{
+	led2 = !led2;
+}
 
 int main(void)
 {
 	char i = 0;
 	
 	Systick_Init();
+	
+	button.rise(&toggle);
 	
   while (1)
   {		
@@ -20,8 +30,7 @@ int main(void)
 			i = 0;
 			led1 = 0;
 			
-			// PA0 WkUp1
-			power.standby(1);
+			power.stop();
 		}
 		else i++;
   }
