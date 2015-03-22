@@ -634,11 +634,6 @@
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
             </File>
-            <File>
-              <FileName>CLI.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\lib\MISC\src\CLI.cpp</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>

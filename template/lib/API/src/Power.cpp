@@ -24,7 +24,7 @@
 
 Power :: Power(void)
 {
-	// Enable PWR APB1 Clock
+  // Enable the PWR clock
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 }
 
@@ -59,16 +59,13 @@ void Power :: standby(char pin)
 	{
 		// PA0
 		PWR_WakeUpPinCmd(PWR_WakeUpPin_1, ENABLE);
-		
-		// Request to enter STANDBY mode
-		PWR_EnterSTANDBYMode();
 	}
 	else if(pin == 2)
 	{
 		// PC13
 		PWR_WakeUpPinCmd(PWR_WakeUpPin_2, ENABLE);
-		
-		// Request to enter STANDBY mode
-		PWR_EnterSTANDBYMode();
 	}
+	
+	// Request to enter STANDBY mode
+	PWR_EnterSTANDBYMode();
 }

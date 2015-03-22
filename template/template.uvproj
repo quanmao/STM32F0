@@ -624,6 +624,11 @@
               <FileType>8</FileType>
               <FilePath>.\lib\API\src\Power.cpp</FilePath>
             </File>
+            <File>
+              <FileName>RTC.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\API\src\RTC.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
