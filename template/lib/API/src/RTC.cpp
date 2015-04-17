@@ -23,7 +23,7 @@ extern "C"
  *
  */
 
-CLOCK :: CLOCK(void)
+CLOCK :: CLOCK(char type)
 {
 	RTC_InitTypeDef   RTC_InitStructure;
 	
@@ -33,19 +33,43 @@ CLOCK :: CLOCK(void)
 	// Enable access to RTC register (write access)
 	PWR_BackupAccessCmd(ENABLE);
 	
-	// Enable the LSI OSC 
-	RCC_LSICmd(ENABLE);
-	
-	// Select LSI (40kHz)
-	RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
-	
-	// Enable RTC clock (LSI)
-	RCC_RTCCLKCmd(ENABLE);
-	
-	// Init RTC (LSI = 40kHz) => 40000 / (100 * 400) = 1 Hz
-	RTC_InitStructure.RTC_AsynchPrediv = 99; // 99 + 1 = 100
-	RTC_InitStructure.RTC_SynchPrediv = 399; // 399 + 1 = 400 
-	RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
+	if(type == RTC_LSI)
+	{
+		// Enable the LSI OSC 
+		RCC_LSICmd(ENABLE);
+		
+		// Select LSI (40kHz)
+		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
+		
+		// Enable RTC clock (LSI)
+		RCC_RTCCLKCmd(ENABLE);
+		
+		// Init RTC (LSI = 40kHz) => 40000 / (100 * 400) = 1 Hz
+		RTC_InitStructure.RTC_AsynchPrediv = 99; // 99 + 1 = 100
+		RTC_InitStructure.RTC_SynchPrediv = 399; // 399 + 1 = 400 
+		RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
+	}
+	else
+	{
+		//RCC_LSEDriveConfig(RCC_LSEDrive_High);
+		
+		// Enable the LSE OSC 
+		RCC_LSEConfig(RCC_LSE_ON);
+		
+		// Wait clock to be stable
+		while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET);
+		
+		// Select LSE (32.768kHz)
+		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
+		
+		// Enable RTC clock (LSE)
+		RCC_RTCCLKCmd(ENABLE);
+		
+		// Init RTC (LSE = 32.768kHz) => 32768 / (128 * 256) = 1 Hz
+		RTC_InitStructure.RTC_AsynchPrediv = 127; // 127 + 1 = 128
+		RTC_InitStructure.RTC_SynchPrediv = 255; // 255 + 1 = 256 
+		RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
+	}
 	
 	RTC_Init(&RTC_InitStructure);
 }

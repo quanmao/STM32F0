@@ -1,6 +1,8 @@
 #include "main.h"
 
-CLOCK clock;
+CLOCK clock; // Default LSI
+//CLOCK clock(RTC_LSI); // LSI (internal 40kHz)
+//CLOCK clock(RTC_LSE); // LSE (external 32kHz)
 
 DigitalOut led1(PC9);
 

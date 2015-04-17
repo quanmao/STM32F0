@@ -4,6 +4,10 @@
 /* includes ---------------------------------------------------------------- */
 #include "stm32f0xx_rtc.h"
 
+/* defines ----------------------------------------------------------------- */
+#define RTC_LSI 0x01
+#define RTC_LSE 0x02
+
 /* structures -------------------------------------------------------------- */
 struct Time
 {
@@ -26,7 +30,7 @@ class CLOCK
 	
 	public:
 		
-		CLOCK(void);
+		CLOCK(char type = RTC_LSI);
 		void set(Time time);
 		void set(Date date);
 		void get(Time *time);

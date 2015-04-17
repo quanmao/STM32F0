@@ -30,7 +30,7 @@ char I2C2_index;
  *
  */
 
-I2C :: I2C(I2C_TypeDef* I2Cx, GPIO_common GPIO_c_sda, GPIO_common GPIO_c_scl)
+I2C :: I2C(I2C_TypeDef* I2Cx, GPIO_common GPIO_c_sda, GPIO_common GPIO_c_scl, char address)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -61,7 +61,7 @@ I2C :: I2C(I2C_TypeDef* I2Cx, GPIO_common GPIO_c_sda, GPIO_common GPIO_c_scl)
 	
 	*m_busy = 0;
 	*m_index = 0;
-
+	
 	/* SDA/SCL GPIO clock enable */
   if(m_sdaPort == GPIOA) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 	else if(m_sdaPort == GPIOB) RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
@@ -112,8 +112,8 @@ I2C :: I2C(I2C_TypeDef* I2Cx, GPIO_common GPIO_c_sda, GPIO_common GPIO_c_scl)
 	I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;					/* I2C mode (I2C, SMBus, ...) */
 	I2C_InitStructure.I2C_AnalogFilter = I2C_AnalogFilter_Enable;
   I2C_InitStructure.I2C_DigitalFilter = 0x00;
-	I2C_InitStructure.I2C_OwnAddress1 = OWN_ADDRESS;		/* Own address */
-  I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;					/* Acknowledge enable */
+	I2C_InitStructure.I2C_OwnAddress1 = address;		/* Own address */
+  I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;			/* Acknowledge enable */
 	
 	if(m_I2C == I2C1) I2C_InitStructure.I2C_Timing = 0x0030020B; 					// Speed !!! 400KHz | 8MHz (HSI) => 0x0030020A
   else if(m_I2C == I2C2) I2C_InitStructure.I2C_Timing =  0x10950C27;		// Speed !!! 400KHz | 48MHz (PCCLK => HSE) => 0x10950C27
@@ -123,12 +123,13 @@ I2C :: I2C(I2C_TypeDef* I2Cx, GPIO_common GPIO_c_sda, GPIO_common GPIO_c_scl)
   /* I2C Initialization */
   I2C_Init(m_I2C, &I2C_InitStructure);
 
-	/* IRQ configuration */	
+	/* IRQ configuration */
+	I2C_ITConfig(m_I2C, I2C_IT_ADDRI, ENABLE);
 	I2C_ITConfig(m_I2C, I2C_IT_TXI, ENABLE);
-	I2C_ITConfig(m_I2C, I2C_IT_TC, ENABLE);
-	I2C_ITConfig(m_I2C, I2C_IT_RXNE, ENABLE);
-	I2C_ITConfig(m_I2C, I2C_IT_NACKF, ENABLE);
-	I2C_ITConfig(m_I2C, I2C_IT_STOPF, ENABLE);
+	I2C_ITConfig(m_I2C, I2C_IT_TCI, ENABLE);
+	I2C_ITConfig(m_I2C, I2C_IT_RXI, ENABLE);
+	I2C_ITConfig(m_I2C, I2C_IT_NACKI, ENABLE);
+	I2C_ITConfig(m_I2C, I2C_IT_STOPI, ENABLE);
 	
   /* I2C ENABLE */
   I2C_Cmd(m_I2C, ENABLE);
@@ -182,6 +183,42 @@ char I2C :: read(char address, char* command, char size)
 	}
 	
 	return result;
+}
+
+/*!
+ *  \brief I2C Read slave(non blocking call)
+ *
+ *  Return data received (slave).
+ *
+ *  \param buffer : data
+ *  \return length
+ */
+
+char I2C :: read_s(char* buffer)
+{
+	char i = 0;
+	char length = 0;
+	
+	/* Periheral busy ? */
+	if(I2C_GetFlagStatus(m_I2C, I2C_FLAG_BUSY) || *m_busy)
+	{
+		return 0;
+	}
+	
+	/* Data received ? */
+	if(*m_index > 0)
+	{
+		length = *m_index;
+		
+		for(i = 0; i < length; i++)
+		{
+			buffer[i] = m_buffer[i];
+		}
+		
+		*m_index = 0;
+	}
+
+	return length;
 }
 
 /*!
@@ -267,9 +304,24 @@ char I2C :: write_b(char address, char* command, char size)
  */
 
 extern "C"
-{
+{	
 	void I2C1_IRQHandler(void)
 	{
+		/* Address matched (slave) */
+		if(I2C_GetITStatus(I2C1, I2C_IT_ADDR))
+		{
+			I2C_GetAddressMatched(I2C1);
+			
+			if(I2C_GetTransferDirection(I2C1) == I2C_Direction_Receiver)
+			{
+				// TODO:
+				// + Callback (send data to master)
+				// + Set transmit IT
+			}
+			
+			I2C_ClearFlag(I2C1, I2C_IT_ADDR);
+		}
+		
 		/* Transmit complete */
 		if(I2C_GetITStatus(I2C1, I2C_IT_TC))
 		{
@@ -285,9 +337,11 @@ extern "C"
 		
 		/* Receive buffer interrupt status */
 		if(I2C_GetITStatus(I2C1, I2C_IT_RXNE))
-		{			
+		{
 			I2C1_buffer[I2C1_index] = I2C_ReceiveData(I2C1);
-			I2C1_index++;
+			
+			if(I2C1_index < 0x7F) I2C1_index++;
+			else I2C1_index = 0;
 		}
 		
 		/* Clear NACK error */
@@ -308,6 +362,21 @@ extern "C"
 	
 	void I2C2_IRQHandler(void)
 	{
+		/* Address matched (slave) */
+		if(I2C_GetITStatus(I2C2, I2C_IT_ADDR))
+		{
+			I2C_GetAddressMatched(I2C2);
+			
+			if(I2C_GetTransferDirection(I2C2) == I2C_Direction_Receiver)
+			{
+				// TODO:
+				// + Callback (send data to master)
+				// + Set transmit IT
+			}
+			
+			I2C_ClearFlag(I2C2, I2C_IT_ADDR);
+		}
+		
 		/* Transmit complete */
 		if(I2C_GetITStatus(I2C2, I2C_IT_TC))
 		{
@@ -325,7 +394,9 @@ extern "C"
 		if(I2C_GetITStatus(I2C2, I2C_IT_RXNE))
 		{			
 			I2C2_buffer[I2C2_index] = I2C_ReceiveData(I2C2);
-			I2C2_index++;
+
+			if(I2C2_index < 0x7F) I2C2_index++;
+			else I2C2_index = 0;
 		}
 		
 		/* Clear NACK error */

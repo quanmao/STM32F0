@@ -28,14 +28,14 @@ class I2C
 		int m_sclSource;
 		
 		char* m_buffer;
-		char* m_size;
 		char* m_index;
 		char* m_busy;
 		
 	public:
 		
-		I2C(I2C_TypeDef* I2Cx, GPIO_common GPIO_c_sda, GPIO_common GPIO_c_scl);
+		I2C(I2C_TypeDef* I2Cx, GPIO_common GPIO_c_sda, GPIO_common GPIO_c_scl, char address = OWN_ADDRESS);
 		char read(char address, char* command, char size);
+		char read_s(char* buffer);
 		char write(char address, char* command, char size);
 		char write_b(char address, char* command, char size);
 };
