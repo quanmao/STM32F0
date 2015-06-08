@@ -33,16 +33,28 @@ CLOCK :: CLOCK(char type)
 	// Enable access to RTC register (write access)
 	PWR_BackupAccessCmd(ENABLE);
 	
+	// Reset Backup Domain
+  RCC_BackupResetCmd(ENABLE);
+  RCC_BackupResetCmd(DISABLE);
+	
+	RTC_DeInit();
+	
 	if(type == RTC_LSI)
 	{
 		// Enable the LSI OSC 
 		RCC_LSICmd(ENABLE);
+		
+		// Wait clock to be stable
+		while(RCC_GetFlagStatus(RCC_FLAG_LSIRDY) == RESET);
 		
 		// Select LSI (40kHz)
 		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
 		
 		// Enable RTC clock (LSI)
 		RCC_RTCCLKCmd(ENABLE);
+		
+		// Wait for RTC APB registers synchronisation
+		RTC_WaitForSynchro();
 		
 		// Init RTC (LSI = 40kHz) => 40000 / (100 * 400) = 1 Hz
 		RTC_InitStructure.RTC_AsynchPrediv = 99; // 99 + 1 = 100
@@ -51,7 +63,10 @@ CLOCK :: CLOCK(char type)
 	}
 	else
 	{
-		//RCC_LSEDriveConfig(RCC_LSEDrive_High);
+		// Disable the LSI OSC 
+		RCC_LSICmd(DISABLE);
+		
+		RCC_LSEDriveConfig(RCC_LSEDrive_High);
 		
 		// Enable the LSE OSC 
 		RCC_LSEConfig(RCC_LSE_ON);
@@ -64,6 +79,9 @@ CLOCK :: CLOCK(char type)
 		
 		// Enable RTC clock (LSE)
 		RCC_RTCCLKCmd(ENABLE);
+		
+		// Wait for RTC APB registers synchronisation
+		RTC_WaitForSynchro();
 		
 		// Init RTC (LSE = 32.768kHz) => 32768 / (128 * 256) = 1 Hz
 		RTC_InitStructure.RTC_AsynchPrediv = 127; // 127 + 1 = 128

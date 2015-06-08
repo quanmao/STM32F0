@@ -124,7 +124,10 @@ I2C :: I2C(I2C_TypeDef* I2Cx, GPIO_common GPIO_c_sda, GPIO_common GPIO_c_scl, ch
   I2C_Init(m_I2C, &I2C_InitStructure);
 
 	/* IRQ configuration */
-	I2C_ITConfig(m_I2C, I2C_IT_ADDRI, ENABLE);
+	if(address != 0x00)
+	{
+		I2C_ITConfig(m_I2C, I2C_IT_ADDRI, ENABLE);
+	}
 	I2C_ITConfig(m_I2C, I2C_IT_TXI, ENABLE);
 	I2C_ITConfig(m_I2C, I2C_IT_TCI, ENABLE);
 	I2C_ITConfig(m_I2C, I2C_IT_RXI, ENABLE);
@@ -297,6 +300,26 @@ char I2C :: write_b(char address, char* command, char size)
 	while(*m_busy);
 	
 	return result;
+}
+
+/*!
+ *  \brief I2C busy
+ *
+ *  I2C is busy ?
+ *
+ *  \return 1 if busy else 0
+ */
+
+char I2C :: busy(void)
+{
+	if(I2C_GetFlagStatus(m_I2C, I2C_FLAG_BUSY) || *m_busy)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 /*!

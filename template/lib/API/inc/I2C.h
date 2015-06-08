@@ -38,6 +38,7 @@ class I2C
 		char read_s(char* buffer);
 		char write(char address, char* command, char size);
 		char write_b(char address, char* command, char size);
+		char busy(void);
 };
 
 #endif
