@@ -8,6 +8,8 @@
 #define RTC_LSI 0x01
 #define RTC_LSE 0x02
 
+#define BKP_VALUE 0x32F0 
+
 /* structures -------------------------------------------------------------- */
 struct Time
 {

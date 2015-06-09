@@ -29,67 +29,77 @@ CLOCK :: CLOCK(char type)
 	
 	// RTC clock (peripheral)
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
-	
+		
 	// Enable access to RTC register (write access)
 	PWR_BackupAccessCmd(ENABLE);
 	
-	// Reset Backup Domain
-  RCC_BackupResetCmd(ENABLE);
-  RCC_BackupResetCmd(DISABLE);
-	
-	RTC_DeInit();
-	
-	if(type == RTC_LSI)
+	// RTC not configured ?
+	if (RTC_ReadBackupRegister(RTC_BKP_DR0) != BKP_VALUE)
 	{
-		// Enable the LSI OSC 
-		RCC_LSICmd(ENABLE);
+		if(type == RTC_LSI)
+		{
+			// Enable the LSI OSC 
+			RCC_LSICmd(ENABLE);
+			
+			// Wait clock to be stable
+			while(RCC_GetFlagStatus(RCC_FLAG_LSIRDY) == RESET);
+			
+			// Select LSI (40kHz)
+			RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
+
+			// Enable RTC clock (LSI)
+			RCC_RTCCLKCmd(ENABLE);
+				
+			// Wait for RTC APB registers synchronisation
+			RTC_WaitForSynchro();
+				
+			// Init RTC (LSI = 40kHz) => 40000 / (100 * 400) = 1 Hz
+			RTC_InitStructure.RTC_AsynchPrediv = 99; // 99 + 1 = 100
+			RTC_InitStructure.RTC_SynchPrediv = 399; // 399 + 1 = 400 
+			RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
+		}
+		else
+		{			
+			// Enable the LSE OSC 
+			RCC_LSEConfig(RCC_LSE_ON);
+			
+			// Wait clock to be stable
+			while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET);
+			
+			// Select LSE (32.768kHz)
+			RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
+			
+			// Enable RTC clock (LSE)
+			RCC_RTCCLKCmd(ENABLE);
+			
+			// Wait for RTC APB registers synchronisation
+			RTC_WaitForSynchro();
+						
+			// Init RTC (LSE = 32.768kHz) => 32768 / (128 * 256) = 1 Hz
+			RTC_InitStructure.RTC_AsynchPrediv = 127; // 127 + 1 = 128
+			RTC_InitStructure.RTC_SynchPrediv = 255; // 255 + 1 = 256 
+			RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
+		}
 		
-		// Wait clock to be stable
-		while(RCC_GetFlagStatus(RCC_FLAG_LSIRDY) == RESET);
-		
-		// Select LSI (40kHz)
-		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
-		
-		// Enable RTC clock (LSI)
-		RCC_RTCCLKCmd(ENABLE);
-		
-		// Wait for RTC APB registers synchronisation
-		RTC_WaitForSynchro();
-		
-		// Init RTC (LSI = 40kHz) => 40000 / (100 * 400) = 1 Hz
-		RTC_InitStructure.RTC_AsynchPrediv = 99; // 99 + 1 = 100
-		RTC_InitStructure.RTC_SynchPrediv = 399; // 399 + 1 = 400 
-		RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
+		RTC_Init(&RTC_InitStructure);
 	}
 	else
 	{
-		// Disable the LSI OSC 
-		RCC_LSICmd(DISABLE);
+		// RTC clock (peripheral)
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 		
-		RCC_LSEDriveConfig(RCC_LSEDrive_High);
+		// Enable access to RTC register (write access)
+		PWR_BackupAccessCmd(ENABLE);
 		
-		// Enable the LSE OSC 
-		RCC_LSEConfig(RCC_LSE_ON);
-		
-		// Wait clock to be stable
-		while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET);
-		
-		// Select LSE (32.768kHz)
-		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
-		
-		// Enable RTC clock (LSE)
-		RCC_RTCCLKCmd(ENABLE);
+		if(type == RTC_LSI)
+		{
+			// Enable the LSI OSC 
+			RCC_LSICmd(ENABLE);
+		}
 		
 		// Wait for RTC APB registers synchronisation
 		RTC_WaitForSynchro();
-		
-		// Init RTC (LSE = 32.768kHz) => 32768 / (128 * 256) = 1 Hz
-		RTC_InitStructure.RTC_AsynchPrediv = 127; // 127 + 1 = 128
-		RTC_InitStructure.RTC_SynchPrediv = 255; // 255 + 1 = 256 
-		RTC_InitStructure.RTC_HourFormat = RTC_HourFormat_24;
 	}
-	
-	RTC_Init(&RTC_InitStructure);
 }
 
 /*!
