@@ -56,6 +56,8 @@ GPIO_common PD2 = {GPIOD, GPIO_Pin_2, GPIO_PinSource2};
 
 GPIO_common PF0 = {GPIOF, GPIO_Pin_0, GPIO_PinSource0};
 GPIO_common PF1 = {GPIOF, GPIO_Pin_1, GPIO_PinSource1};
+GPIO_common PF4 = {GPIOF, GPIO_Pin_4, GPIO_PinSource4};
+GPIO_common PF5 = {GPIOF, GPIO_Pin_5, GPIO_PinSource5};
 GPIO_common PF6 = {GPIOF, GPIO_Pin_6, GPIO_PinSource6};
 GPIO_common PF7 = {GPIOF, GPIO_Pin_7, GPIO_PinSource7};
 

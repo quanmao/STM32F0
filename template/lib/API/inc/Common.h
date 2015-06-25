@@ -77,6 +77,8 @@ extern GPIO_common PD2;
 
 extern GPIO_common PF0;
 extern GPIO_common PF1;
+extern GPIO_common PF4;
+extern GPIO_common PF5;
 extern GPIO_common PF6;
 extern GPIO_common PF7;
 
