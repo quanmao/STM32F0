@@ -14,8 +14,12 @@ struct Effect
 {
 	int value;
 	int timer;
-	int select;
 	char flag;
+	
+	int select;
+	char *buffer;
+	int length;
+	char shift;
 };
 
 /* class ------------------------------------------------------------------- */
@@ -50,7 +54,7 @@ class SevenSegGroup
 
 		Effect m_blink;
 		Effect m_scroll;
-		Effect m_loading;
+		Effect m_effect;
 	
 	public:
 		
@@ -63,7 +67,7 @@ class SevenSegGroup
 		void blink(int ms);
 		void blink(char select, int ms);
 		void scroll(int ms);
-		void loading(int ms);
+		void effect(char* buffer, int length, int shift, int ms);
 		void clear(void);
 		void timer(void);
 };

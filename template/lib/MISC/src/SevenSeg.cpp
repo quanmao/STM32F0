@@ -1,8 +1,26 @@
+/*!
+ * \file SevenSeg.cpp
+ * \brief Seven segment API.
+ * \author Rémi.Debord
+ * \version 1.0
+ * \date 13 juin 2015
+ *
+ * Seven segment library.
+ *
+ */
+
 #include "SevenSeg.h"
 #include "AsciiMap.h"
 
 #include <stdio.h>
 #include <string.h>
+
+/*!
+ *  \brief Constructor
+ *
+ *  SevenSeg constructor.
+ *
+ */
 
 SevenSeg :: SevenSeg(DigitalOut* segment, DigitalOut* digit)
 {
@@ -15,6 +33,16 @@ SevenSeg :: SevenSeg(DigitalOut* segment, DigitalOut* digit)
 	
 	m_digit = digit;
 }
+
+/*!
+ *  \brief Segments
+ *
+ *  Set segments value.
+ *
+ *  (msb) dot g f e d c b a (lsb)
+ *
+ *  \param c : segments values
+ */
 
 void SevenSeg :: segments(char c)
 {
@@ -29,6 +57,14 @@ void SevenSeg :: segments(char c)
 	}
 }
 
+/*!
+ *  \brief Set
+ *
+ *  Set segments from an ASCII characters.
+ *
+ *  \param c : ASCII character
+ */
+
 void SevenSeg :: set(char c)
 {	
 	if(c < 0x7F)
@@ -36,6 +72,14 @@ void SevenSeg :: set(char c)
 		this->segments(digitAsciiMap[c]);
 	}
 }
+
+/*!
+ *  \brief Set
+ *
+ *  Set segments from an integer value (0 to 9).
+ *
+ *  \param number : integer
+ */
 
 void SevenSeg :: set(int number)
 {
@@ -45,15 +89,36 @@ void SevenSeg :: set(int number)
 	}
 }
 
+/*!
+ *  \brief On
+ *
+ *  Switch the digit ON.
+ *
+ */
+
 void SevenSeg :: on(void)
 {
 	m_digit->write(0);
 }
 
+/*!
+ *  \brief Off
+ *
+ *  Switch the digit OFF.
+ *
+ */
+
 void SevenSeg :: off(void)
 {
 	m_digit->write(1);
 }
+
+/*!
+ *  \brief Constructor
+ *
+ *  SevenSeg constructor.
+ *
+ */
 
 SevenSegGroup :: SevenSegGroup(void)
 {
@@ -62,6 +127,13 @@ SevenSegGroup :: SevenSegGroup(void)
 	m_inc = 0;
 	m_timer = 0;
 }
+
+/*!
+ *  \brief Update
+ *
+ *  Manage digits display.
+ *
+ */
 
 void SevenSegGroup :: update(void)
 {	
@@ -76,7 +148,7 @@ void SevenSegGroup :: update(void)
 		if(m_size > 0)
 		{
 			// Special effects using segments ?
-			if(m_loading.value)
+			if(m_effect.value)
 			{
 				m_digit[m_inc]->segments(m_buffer[m_inc]);
 			}
@@ -139,18 +211,26 @@ void SevenSegGroup :: update(void)
 	}
 	
 	// Loading ?
-	if((m_loading.timer == 0) && m_loading.value)
+	if((m_effect.timer == 0) && m_effect.value)
 	{
-		m_loading.timer = m_loading.value;
+		m_effect.timer = m_effect.value;
 		
-		m_loading.flag = (m_loading.flag + 1) % 6;
+		m_effect.flag = (m_effect.flag + 1) % m_effect.length;
 		
 		for(i = 0; i < m_size; i++)
 		{
-			m_buffer[i] = loadingMap[(m_loading.flag+i)%6];
+			m_buffer[i] = m_effect.buffer[(m_effect.flag+(m_effect.shift*i))%m_effect.length];
 		}
 	}
 }
+
+/*!
+ *  \brief Add
+ *
+ *  Add a digit (seven segment) to the group.
+ *
+ *  \param digit: Seven segment object
+ */
 
 void SevenSegGroup :: add(SevenSeg* digit)
 {
@@ -158,6 +238,15 @@ void SevenSegGroup :: add(SevenSeg* digit)
 	
 	m_mux = REFRESH_TIME / m_size;
 }
+
+/*!
+ *  \brief Set (string)
+ *
+ *  Set an ASCII string to display.
+ *
+ *  \param buffer: ASCII string
+ *  \param length: ASCII string length
+ */
 
 void SevenSegGroup :: set(char* buffer, int length)
 {
@@ -171,6 +260,14 @@ void SevenSegGroup :: set(char* buffer, int length)
 	}
 }
 
+/*!
+ *  \brief Set (number)
+ *
+ *  Set a number to display.
+ *
+ *  \param number
+ */
+
 void SevenSegGroup :: set(int number)
 {
 	char buffer[MAX_DIGITS] = {0};
@@ -179,6 +276,14 @@ void SevenSegGroup :: set(int number)
 	
 	sprintf(m_buffer, buffer, number);
 }
+
+/*!
+ *  \brief Blink
+ *
+ *  All the seven segment in the group blink at the specified delay.
+ *
+ *  \param ms : blink delay (ms)
+ */
 
 void SevenSegGroup :: blink(int ms)
 {
@@ -193,6 +298,15 @@ void SevenSegGroup :: blink(int ms)
 	}
 }
 
+/*!
+ *  \brief Blink
+ *
+ *  Select one seven segment to blink at the specified delay.
+ *
+ *  \param select : 0 to n seven segment
+ *  \param ms : blink delay (ms)
+ */
+
 void SevenSegGroup :: blink(char select, int ms)
 {
 	m_blink.select |= 0x01 << select;
@@ -206,6 +320,14 @@ void SevenSegGroup :: blink(char select, int ms)
 	}
 }
 
+/*!
+ *  \brief Scroll
+ *
+ *  Scroll text displayed on the seven segments (right to left)
+ *
+ *  \param ms : scroll delay (ms)
+ */
+
 void SevenSegGroup :: scroll(int ms)
 {
 	if(m_scroll.value != ms)
@@ -217,16 +339,38 @@ void SevenSegGroup :: scroll(int ms)
 	}
 }
 
-void SevenSegGroup :: loading(int ms)
+/*!
+ *  \brief Effect
+ *
+ *  User specified effect (address directly the segments).
+ *
+ *  \param buffer : array with special value
+ *  \param length : array length
+ *  \param shift : shift
+ *  \param ms : delay
+ */
+
+void SevenSegGroup :: effect(char* buffer, int length, int shift, int ms)
 {
-	if(m_loading.value != ms)
+	if(m_effect.value != ms)
 	{
-		m_loading.value = (ms <= 0) ? 0 : ms;
-		m_loading.flag = 0;
+		m_effect.buffer = buffer;
+		m_effect.length = length;
+		m_effect.shift = shift;
 		
-		m_loading.timer = m_loading.value;
+		m_effect.value = (ms <= 0) ? 0 : ms;
+		m_effect.flag = 0;
+		
+		m_effect.timer = m_effect.value;
 	}
 }
+
+/*!
+ *  \brief Clear
+ *
+ *  Disable any effect.
+ *
+ */
 
 void SevenSegGroup :: clear(void)
 {
@@ -234,8 +378,15 @@ void SevenSegGroup :: clear(void)
 	m_blink.select = 0;
 	
 	m_scroll.value = 0;
-	m_loading.value = 0;
+	m_effect.value = 0;
 }
+
+/*!
+ *  \brief Manage SevenSegGroup base time 
+ *
+ *  Note: Place it into a ticker callback of 1 ms
+ *
+ */
 
 void SevenSegGroup :: timer(void)
 {
@@ -243,5 +394,5 @@ void SevenSegGroup :: timer(void)
 	
 	if(m_blink.timer) m_blink.timer--;
 	if(m_scroll.timer) m_scroll.timer--;
-	if(m_loading.timer) m_loading.timer--;
+	if(m_effect.timer) m_effect.timer--;
 }
