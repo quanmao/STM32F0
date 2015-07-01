@@ -339,6 +339,31 @@ void InterruptIn :: fall(void(*f)(void))
 }
 
 /*!
+ *  \brief Set callback function on a rising and a falling edge
+ *
+ *  Associate rising/falling edge to callback function.
+ *
+ *  \param void(*f)(void) : function address
+ *
+ */
+
+void InterruptIn :: risefall(void(*f)(void))
+{	
+	EXTI_InitTypeDef   EXTI_InitStructure;
+	
+	/* Attribute function adress to the function pointer */
+	ExternalInterruptPin[m_pinSource] = f;
+	externalInterruptAttach[m_pinSource] = 1;
+	
+	/* Configure EXTI "pin" */
+  EXTI_InitStructure.EXTI_Line = (uint32_t) m_pin;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling;  
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+}
+
+/*!
  *  \brief Change input mode
  *
  *  Modify input mode (no pull, pull up, ...).
@@ -357,6 +382,40 @@ void InterruptIn :: mode(GPIOPuPd_TypeDef pull)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_3;
   GPIO_InitStructure.GPIO_PuPd = pull;
   GPIO_Init(m_port, &GPIO_InitStructure);
+}
+
+/*!
+ *  \brief InterruptIn read
+ *
+ *  Read GPIO state (0 or 1).
+ *
+ *  \return 0 or 1
+ *
+ */
+
+int InterruptIn :: read()
+{
+	if((GPIO_ReadInputDataBit(m_port, m_pin)) != 0) m_value = 1;
+	else m_value = 0;
+	
+	return m_value;
+}
+
+/*!
+ *  \brief InterruptIn read (shorthand)
+ *
+ *  Read GPIO state (0 or 1).
+ *
+ *  \return 0 or 1
+ *
+ */
+
+InterruptIn :: operator int()
+{
+	if((GPIO_ReadInputDataBit(m_port, m_pin)) != 0) m_value = 1;
+	else m_value = 0;
+	
+	return m_value;
 }
 
 /*!

@@ -48,13 +48,17 @@ class InterruptIn
 		int m_pin;
 		int m_pinSource;
 		int m_irqVector;
+		int m_value;
 	
 	public:
 		
 		InterruptIn(GPIO_common GPIO_c);
 		void rise(void(*f)(void));
 		void fall(void(*f)(void));
+		void risefall(void(*f)(void));
 		void mode(GPIOPuPd_TypeDef pull);
+		int read();												// Read output state
+		operator int();										// Read output state (shorthand)
 };
 
 #endif
