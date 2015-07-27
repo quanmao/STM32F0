@@ -452,6 +452,17 @@ int Serial :: read(char *buffer)
 	}
 }
 
+/*!
+ *  \brief flush
+ *
+ *  Flush input data.
+ */
+
+void Serial :: flush(void)
+{
+	m_rxTail = 0;
+	m_rxHead = 0;
+}
 
 /*!
  *  \brief USART busy

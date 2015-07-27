@@ -1,16 +1,16 @@
 #include "main.h"
 #include <string.h>
 
-#define SLAVE_ADDRESS	(0xB1) // STM32F0 slave
+#define SLAVE_ADDRESS	(0xB0) // STM32F0 slave
 
 //#define MASTER
 
 DigitalOut led(PC8);
 
 #ifdef MASTER
-I2C i2c(I2C2, PB11, PB10);
+I2C i2c(I2C2, PF7, PF6);
 #else
-I2C i2c(I2C2, PF7, PF6, SLAVE_ADDRESS);
+I2C i2c(I2C1, PB9, PB8, SLAVE_ADDRESS);
 #endif
 
 int main(void)

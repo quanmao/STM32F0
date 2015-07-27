@@ -1,37 +1,28 @@
 #include "main.h"
-
-CLOCK clock; // Default LSI
-//CLOCK clock(RTC_LSI); // LSI (internal 40kHz)
-//CLOCK clock(RTC_LSE); // LSE (external 32kHz)
-
-DigitalOut led1(PC9);
-
-Time time;
-Date date;
-
-void toggle(void)
-{
-	led1 = !led1;
 	
-	// Relaunch alarm in 10 sec
-	clock.alarm(10, &toggle);
+DigitalOut led1(PC8);
+DigitalOut led2(PC9);
+	
+// DigitalIn pushButton(PA0);
+InterruptIn pushButton(PA0);
+
+void Push(void)
+{
+	led2 = !led2;
 }
 
 int main(void)
-{	
+{
 	Systick_Init();
 	
-	time.hours = 10;
-	time.minutes = 30;
-	time.seconds = 0;
-	
-	clock.set(time);
-	
-	// Alarm set to 10 sec
-	clock.alarm(10, &toggle);
+	pushButton.rise(&Push);
 	
   while (1)
   {
-		clock.get(&time);
+		led1 = !led1;
+		Delay(100);
+		
+// 		if(pushButton) led2 = 1;
+// 		else led2 = 0;
   }
 }

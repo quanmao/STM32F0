@@ -44,7 +44,6 @@ MCP9803 :: MCP9803(I2C* i2cx, char address)
 float MCP9803 :: get(void)
 {
 		char buffer[8] = {0};
-		float temperature = 0;
 	
 		buffer[0] = 0x00;	// Temperature register (0x00)
 		

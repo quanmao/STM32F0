@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_proj.xsd">
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_projx.xsd">
 
-  <SchemaVersion>1.1</SchemaVersion>
+  <SchemaVersion>2.1</SchemaVersion>
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
@@ -14,9 +14,9 @@
         <TargetCommonOption>
           <Device>STM32F051R8</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F0xx_DFP.1.3.0</PackID>
+          <PackID>Keil.STM32F0xx_DFP.1.4.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
-          <Cpu>IROM(0x08000000,0x10000) IRAM(0x20000000,0x2000) CPUTYPE("Cortex-M0") CLOCK(48000000) ELITTLE</Cpu>
+          <Cpu>IROM(0x08000000,0x10000) IRAM(0x20000000,0x2000) CPUTYPE("Cortex-M0") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F0xx_64 -FS08000000 -FL010000 -FP0($$Device:STM32F051R8$Flash\STM32F0xx_64.FLM))</FlashDriverDll>
@@ -84,6 +84,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -145,7 +147,6 @@
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>1</RestoreTracepoints>
             <RestoreSysVw>1</RestoreSysVw>
-            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
           <TargetSelection>11</TargetSelection>
@@ -174,7 +175,7 @@
             <Capability>1</Capability>
             <DriverSelection>4103</DriverSelection>
           </Flash1>
-          <bUseTDR>0</bUseTDR>
+          <bUseTDR>1</bUseTDR>
           <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
@@ -362,11 +363,13 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
             <VariousControls>
               <MiscControls>--cpp</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\inc;.\lib\API\inc;.\lib\CMSIS\Device\ST\STM32F0xx\Include;.\lib\MISC\inc;.\lib\STM32F0\inc;.\lib\FreeRTOS\Source\include;.\lib\FreeRTOS\Demo\CORTEX_M0_STM32F0518_IAR;.\lib\FreeRTOS\Source\portable\RVDS\ARM_CM0</IncludePath>
+              <IncludePath>.\inc;.\lib\API\inc;.\lib\CMSIS\Device\ST\STM32F0xx\Include;.\lib\MISC\inc;.\lib\STM32F0\inc;.\lib\FreeRTOS\Source\include;.\lib\FreeRTOS\Demo\CORTEX_M0_STM32F0518_IAR;.\lib\FreeRTOS\Source\portable\RVDS\ARM_CM0;.\lib\CMSIS\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -638,6 +641,41 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>SevenSeg.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\SevenSeg.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>DS3231.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\DS3231.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Button.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\Button.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Encoder.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\Encoder.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>MCP9803.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\MCP9803.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>HCSR04.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\HCSR04.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>FONA.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\lib\MISC\src\FONA.cpp</FilePath>
             </File>
           </Files>
         </Group>

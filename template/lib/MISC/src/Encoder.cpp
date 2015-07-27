@@ -40,7 +40,7 @@ Encoder :: Encoder(InterruptIn* A, InterruptIn* B)
 }
 
 /*!
- *  \brief Read
+ *  \brief Get
  *
  *  Read accumulated value.
  *

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<ProjectOpt xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_opt.xsd">
+<ProjectOpt xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_optx.xsd">
 
   <SchemaVersion>1.0</SchemaVersion>
 
@@ -13,6 +13,7 @@
     <tExt>*.txt; *.h; *.inc</tExt>
     <pExt>*.plm</pExt>
     <CppX>*.cpp</CppX>
+    <nMigrate>0</nMigrate>
   </Extensions>
 
   <DaveTm>
@@ -31,6 +32,7 @@
         <BeepAtEnd>1</BeepAtEnd>
         <RunSim>0</RunSim>
         <RunTarget>1</RunTarget>
+        <RunAbUc>0</RunAbUc>
       </OPTTT>
       <OPTHX>
         <HexSelection>1</HexSelection>
@@ -75,11 +77,21 @@
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
-      <CpuCode>0</CpuCode>
+      <CpuCode>18</CpuCode>
       <Books>
         <Book>
           <Number>0</Number>
-          <Title>STM32F0-Discovery Web Page (STM32F0-Discovery)</Title>
+          <Title>Data Brief (STM32F051-Discovery)</Title>
+          <Path>C:\Keil\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Boards\ST\STM32F051-Discovery\Documents\DM00050631.pdf</Path>
+        </Book>
+        <Book>
+          <Number>1</Number>
+          <Title>Schematics (STM32F051-Discovery)</Title>
+          <Path>C:\Keil\ARM\PACK\Keil\STM32F0xx_DFP\1.4.0\Boards\ST\STM32F051-Discovery\Documents\MB1034.pdf</Path>
+        </Book>
+        <Book>
+          <Number>2</Number>
+          <Title>STM32F051-Discovery Web Page (STM32F051-Discovery)</Title>
           <Path>http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/LN1848/PF253215</Path>
         </Book>
       </Books>
@@ -103,7 +115,6 @@
         <tRtrace>1</tRtrace>
         <sRSysVw>1</sRSysVw>
         <tRSysVw>1</tRSysVw>
-        <tPdscDbg>1</tPdscDbg>
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
         <nTsel>11</nTsel>
@@ -122,6 +133,11 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>ARMRTXEVENTFLAGS</Key>
+          <Name>-L70 -Z18 -C0 -M0 -T1</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>DLGTARM</Key>
           <Name>(1010=75,103,441,526,0)(1007=105,136,282,346,0)(1008=90,120,456,345,0)</Name>
         </SetRegEntry>
@@ -138,12 +154,12 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>ST-LINKIII-KEIL_SWO</Key>
-          <Name>-U-O8398 -O8398 -S0 -C0 -N00("ARM CoreSight SW-DP") -D00(0BB11477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8004 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC1000 -FN1 -FF0STM32F0xx_64.FLM -FS08000000 -FL010000 -FP0($$Device:STM32F051R8$Flash\STM32F0xx_64.FLM)</Name>
+          <Name>-U56FF6E064971544918450887 -O8398 -S0 -C0 -A0 -N00("ARM CoreSight SW-DP") -D00(0BB11477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8004 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC1000 -FN1 -FF0STM32F0xx_64.FLM -FS08000000 -FL010000 -FP0($$Device:STM32F051R8$Flash\STM32F0xx_64.FLM)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
           <Key>UL2CM3</Key>
-          <Name>-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F0xx_64 -FS08000000 -FL010000 -FP0($$Device:STM32F051R8$Flash\STM32F0xx_64.FLM))</Name>
+          <Name>-S0 -C0 -P0 ) -FN1 -FC1000 -FD20000000 -FF0STM32F0xx_64 -FL010000 -FS08000000 -FP0($$Device:STM32F051R8$Flash\STM32F0xx_64.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint/>
@@ -151,32 +167,32 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>RTC_AlarmStructure</ItemText>
+          <ItemText>distance,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>RTC_TimeStructure</ItemText>
+          <ItemText>hcsr04,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>RTCAlarmInterrupt</ItemText>
+          <ItemText>state</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>tmpreg</ItemText>
+          <ItemText>message</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>buffer</ItemText>
+          <ItemText>timeout,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>5</count>
           <WinNumber>1</WinNumber>
-          <ItemText>time,0x0A</ItemText>
+          <ItemText>led2</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -185,12 +201,18 @@
           <WinNumber>2</WinNumber>
           <ItemText>m_index</ItemText>
         </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>result</ItemText>
+        </Ww>
       </WatchWindow2>
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
           <ItemText>0x0800FC00</ItemText>
+          <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>
       <Tracepoint>
@@ -224,12 +246,7 @@
       </DebugFlag>
       <LintExecutable></LintExecutable>
       <LintConfigFile></LintConfigFile>
-      <SystemViewers>
-        <Entry>
-          <Name>System Viewer\I2C2</Name>
-          <WinId>35905</WinId>
-        </Entry>
-      </SystemViewers>
+      <bLintAuto>0</bLintAuto>
     </TargetOption>
   </Target>
 
@@ -787,7 +804,7 @@
       <GroupNumber>4</GroupNumber>
       <FileNumber>41</FileNumber>
       <FileType>8</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
@@ -814,6 +831,97 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\src\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>43</FileNumber>
+      <FileType>8</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\lib\MISC\src\SevenSeg.cpp</PathWithFileName>
+      <FilenameWithoutPath>SevenSeg.cpp</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>44</FileNumber>
+      <FileType>8</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\lib\MISC\src\DS3231.cpp</PathWithFileName>
+      <FilenameWithoutPath>DS3231.cpp</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>45</FileNumber>
+      <FileType>8</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\lib\MISC\src\Button.cpp</PathWithFileName>
+      <FilenameWithoutPath>Button.cpp</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>46</FileNumber>
+      <FileType>8</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\lib\MISC\src\Encoder.cpp</PathWithFileName>
+      <FilenameWithoutPath>Encoder.cpp</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>47</FileNumber>
+      <FileType>8</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\lib\MISC\src\MCP9803.cpp</PathWithFileName>
+      <FilenameWithoutPath>MCP9803.cpp</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>48</FileNumber>
+      <FileType>8</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\lib\MISC\src\HCSR04.cpp</PathWithFileName>
+      <FilenameWithoutPath>HCSR04.cpp</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>5</GroupNumber>
+      <FileNumber>49</FileNumber>
+      <FileType>8</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\lib\MISC\src\FONA.cpp</PathWithFileName>
+      <FilenameWithoutPath>FONA.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

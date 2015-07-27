@@ -58,6 +58,7 @@ class Serial
 		int write(char *buffer, int length);
 		int write_b(char *buffer, int length);
 		int read(char *buffer);
+		void flush(void);
 		char busy(void);
 };
 
